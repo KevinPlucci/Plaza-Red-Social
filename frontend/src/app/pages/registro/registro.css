@@ -1,0 +1,61 @@
+.imagen-perfil {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.vista-previa {
+  flex: none;
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.vista-previa.vacia {
+  display: grid;
+  place-items: center;
+  color: var(--color-primario);
+  background: var(--color-primario-suave);
+}
+
+.vista-previa.vacia svg {
+  width: 48px;
+  height: 48px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.titulo-campo {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+/* El input file nativo queda oculto pero accesible: el botón visible es su label. */
+.oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+label.btn:has(.oculto:focus-visible) {
+  outline: 3px solid rgb(15 107 102 / 35%);
+  outline-offset: 2px;
+}
+
+.fecha {
+  max-width: 260px;
+}
+
+.contador {
+  text-align: right;
+}

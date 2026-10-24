@@ -1,0 +1,54 @@
+.presentacion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+
+.presentacion h2 {
+  margin-bottom: 2px;
+  font-size: 1.4rem;
+}
+
+.presentacion p {
+  margin-bottom: 8px;
+}
+
+.foto {
+  width: 112px;
+  height: 112px;
+  object-fit: cover;
+  background: var(--color-primario-suave);
+  border-radius: 50%;
+}
+
+.descripcion {
+  margin: 20px 0;
+  white-space: pre-line;
+}
+
+.datos {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-borde);
+}
+
+@media (min-width: 640px) {
+  .datos {
+    /* El correo suele ser el dato más largo: su columna es más ancha. */
+    grid-template-columns: minmax(0, 1.6fr) 1fr 1fr;
+  }
+}
+
+.datos dt {
+  font-size: 0.85rem;
+  color: var(--color-texto-suave);
+}
+
+.datos dd {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: break-word;
+}

@@ -1,0 +1,62 @@
+<div class="ancho-mediano">
+  <div class="cabecera-pagina">
+    <h1>Mi perfil</h1>
+  </div>
+
+  @if (auth.usuario(); as usuario) {
+    <section class="tarjeta">
+      <div class="presentacion">
+        <img
+          class="foto"
+          [src]="usuario.imagenPerfil"
+          [alt]="'Foto de perfil de ' + usuario.nombre"
+        />
+        <div>
+          <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
+          <p class="texto-suave">{{ '@' + usuario.nombreUsuario }}</p>
+          <span class="etiqueta">{{
+            usuario.perfil === 'administrador' ? 'Administrador' : 'Usuario'
+          }}</span>
+        </div>
+      </div>
+
+      <p class="descripcion">{{ usuario.descripcion }}</p>
+
+      <dl class="datos">
+        <div>
+          <dt>Correo</dt>
+          <dd>{{ usuario.correo }}</dd>
+        </div>
+        <div>
+          <dt>Fecha de nacimiento</dt>
+          <!-- Se guarda como fecha sin hora (medianoche UTC): se muestra en UTC para que no cambie el día. -->
+          <dd>{{ usuario.fechaNacimiento | date: 'longDate' : 'UTC' }}</dd>
+        </div>
+        <div>
+          <dt>Miembro desde</dt>
+          <dd>{{ usuario.createdAt | date: 'longDate' }}</dd>
+        </div>
+      </dl>
+    </section>
+  } @else {
+    <section class="tarjeta vacio">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="9" r="4" />
+        <path d="M4.5 20a7.5 7.5 0 0 1 15 0" />
+      </svg>
+      <h2>Todavía no iniciaste sesión</h2>
+      <p class="texto-suave">Ingresá o creá una cuenta para ver tus datos.</p>
+      <div class="acciones">
+        <a routerLink="/login" class="btn btn-secundario">Ingresar</a>
+        <a routerLink="/registro" class="btn btn-primario">Crear cuenta</a>
+      </div>
+    </section>
+  }
+</div>

@@ -1,0 +1,18 @@
+# Backend en Render (Blueprint). Las variables marcadas con sync: false se cargan en el panel de Render.
+services:
+  - type: web
+    name: red-social-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: MONGODB_URI
+        sync: false
+      - key: URL_PUBLICA
+        sync: false
+      - key: CORS_ORIGEN
+        sync: false

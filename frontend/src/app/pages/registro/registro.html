@@ -1,0 +1,137 @@
+<div class="tarjeta ancho-mediano">
+  <div class="cabecera-pagina">
+    <h1>Crear cuenta</h1>
+    <p class="texto-suave">
+      Completá tus datos para sumarte a Plaza. Todos los campos son obligatorios.
+    </p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="registrar()" novalidate>
+    <div class="imagen-perfil">
+      @if (vistaPrevia(); as url) {
+        <img class="vista-previa" [src]="url" alt="Vista previa de la imagen de perfil" />
+      } @else {
+        <span class="vista-previa vacia" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="9" r="4" />
+            <path d="M4.5 20a7.5 7.5 0 0 1 15 0" />
+          </svg>
+        </span>
+      }
+      <div>
+        <span class="titulo-campo" id="titulo-imagen">Imagen de perfil</span>
+        <label class="btn btn-secundario">
+          {{ campos.imagenPerfil.value ? 'Cambiar imagen' : 'Elegir imagen' }}
+          <input
+            type="file"
+            class="oculto"
+            aria-labelledby="titulo-imagen"
+            [accept]="tiposImagen"
+            (change)="elegirImagen($event)"
+          />
+        </label>
+        <small class="ayuda">{{
+          campos.imagenPerfil.value?.name ?? 'JPG, PNG, GIF o WEBP de hasta 2 MB.'
+        }}</small>
+        <app-error-campo [control]="campos.imagenPerfil" />
+      </div>
+    </div>
+
+    <div class="fila-campos">
+      <div class="campo">
+        <label>
+          <span>Nombre</span>
+          <input type="text" formControlName="nombre" autocomplete="given-name" />
+        </label>
+        <app-error-campo [control]="campos.nombre" />
+      </div>
+      <div class="campo">
+        <label>
+          <span>Apellido</span>
+          <input type="text" formControlName="apellido" autocomplete="family-name" />
+        </label>
+        <app-error-campo [control]="campos.apellido" />
+      </div>
+    </div>
+
+    <div class="fila-campos">
+      <div class="campo">
+        <label>
+          <span>Correo</span>
+          <input type="email" formControlName="correo" autocomplete="email" />
+        </label>
+        <app-error-campo [control]="campos.correo" />
+      </div>
+      <div class="campo">
+        <label>
+          <span>Nombre de usuario</span>
+          <input type="text" formControlName="nombreUsuario" autocomplete="username" />
+        </label>
+        <app-error-campo [control]="campos.nombreUsuario" />
+      </div>
+    </div>
+
+    <div class="fila-campos">
+      <div class="campo">
+        <label>
+          <span>Contraseña</span>
+          <input type="password" formControlName="contrasena" autocomplete="new-password" />
+        </label>
+        @if (campos.contrasena.touched && campos.contrasena.invalid) {
+          <app-error-campo [control]="campos.contrasena" />
+        } @else {
+          <small class="ayuda">Mínimo 8 caracteres, con una mayúscula y un número.</small>
+        }
+      </div>
+      <div class="campo">
+        <label>
+          <span>Repetir contraseña</span>
+          <input
+            type="password"
+            formControlName="repetirContrasena"
+            autocomplete="new-password"
+            [class.invalido]="
+              campos.repetirContrasena.touched && form.hasError('contrasenasDistintas')
+            "
+          />
+        </label>
+        <app-error-campo [control]="campos.repetirContrasena" />
+        @if (
+          campos.repetirContrasena.touched &&
+          campos.repetirContrasena.valid &&
+          form.hasError('contrasenasDistintas')
+        ) {
+          <small class="error-texto" role="alert">Las contraseñas no coinciden.</small>
+        }
+      </div>
+    </div>
+
+    <div class="campo fecha">
+      <label>
+        <span>Fecha de nacimiento</span>
+        <input type="date" formControlName="fechaNacimiento" min="1900-01-01" [max]="hoy" />
+      </label>
+      <app-error-campo [control]="campos.fechaNacimiento" />
+    </div>
+
+    <div class="campo">
+      <label>
+        <span>Descripción breve</span>
+        <textarea
+          formControlName="descripcion"
+          rows="3"
+          maxlength="200"
+          placeholder="Contá en pocas palabras quién sos o qué te gusta."
+        ></textarea>
+      </label>
+      <small class="ayuda contador">{{ campos.descripcion.value.length }}/200</small>
+      <app-error-campo [control]="campos.descripcion" />
+    </div>
+
+    <button type="submit" class="btn btn-primario btn-bloque" [disabled]="enviando()">
+      {{ enviando() ? 'Creando cuenta...' : 'Crear cuenta' }}
+    </button>
+  </form>
+
+  <p class="pie-tarjeta texto-suave">¿Ya tenés cuenta? <a routerLink="/login">Ingresá</a></p>
+</div>

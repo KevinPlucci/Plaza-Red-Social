@@ -1,0 +1,13 @@
+# Dependencias y builds
+node_modules/
+dist/
+coverage/
+.angular/
+
+# Variables de entorno (cada uno arma su .env a partir de .env.example)
+.env
+
+# Logs y archivos del sistema
+*.log
+.DS_Store
+Thumbs.db

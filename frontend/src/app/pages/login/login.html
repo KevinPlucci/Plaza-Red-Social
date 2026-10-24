@@ -1,0 +1,32 @@
+<div class="tarjeta ancho-chico">
+  <div class="cabecera-pagina">
+    <h1>Ingresar</h1>
+    <p class="texto-suave">Entrá con tu correo o tu nombre de usuario.</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="ingresar()" novalidate>
+    <div class="campo">
+      <label>
+        <span>Correo o nombre de usuario</span>
+        <input type="text" formControlName="usuario" autocomplete="username" />
+      </label>
+      <app-error-campo [control]="form.controls.usuario" />
+    </div>
+
+    <div class="campo">
+      <label>
+        <span>Contraseña</span>
+        <input type="password" formControlName="contrasena" autocomplete="current-password" />
+      </label>
+      <app-error-campo [control]="form.controls.contrasena" />
+    </div>
+
+    <button type="submit" class="btn btn-primario btn-bloque" [disabled]="enviando()">
+      {{ enviando() ? 'Ingresando...' : 'Ingresar' }}
+    </button>
+  </form>
+
+  <p class="pie-tarjeta texto-suave">
+    ¿Todavía no tenés cuenta? <a routerLink="/registro">Registrate</a>
+  </p>
+</div>
