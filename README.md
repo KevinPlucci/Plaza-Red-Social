@@ -5,9 +5,10 @@ El proyecto está dividido en dos: un **frontend en Angular** y un **backend en 
 
 | | |
 |---|---|
-| **Frontend** | _pendiente de deploy_ (Vercel) |
-| **Backend** | _pendiente de deploy_ (Render) |
-| **Estado** | Sprint 1 terminado |
+| **Frontend** | <https://plaza-red-social.vercel.app> (Vercel) |
+| **Backend** | <https://red-social-api-95af.onrender.com> (Render) |
+| **Repositorio** | <https://github.com/KevinPlucci/Plaza-Red-Social> |
+| **Estado** | Sprint 1 terminado y publicado |
 
 ## Stack
 
@@ -120,14 +121,17 @@ npm start
 
 ## Deploy
 
+Cada push a `main` publica solo el frontend en Vercel y el backend en Render. Para armarlo desde cero:
+
 1. **MongoDB Atlas:** crear un cluster gratuito, un usuario de base de datos y permitir el acceso desde cualquier IP
    (`0.0.0.0/0`, porque Render no tiene IP fija). Copiar la cadena de conexión agregando el nombre de la base
    (`.../red-social?...`).
 2. **Render (backend):** *New → Blueprint* con este repositorio (usa `render.yaml`) y cargar `MONGODB_URI`,
    `URL_PUBLICA` (la URL que asigna Render) y `CORS_ORIGEN` (la URL de Vercel). En el plan gratuito el servicio se
    duerme tras 15 minutos sin uso y el primer pedido tarda cerca de un minuto.
-3. **Vercel (frontend):** importar el repositorio con *Root Directory* `frontend` (usa `frontend/vercel.json`). Antes,
-   poner la URL de Render en `frontend/src/environments/environment.ts`.
+3. **Vercel (frontend):** importar el repositorio como proyecto único (*Import single project* en la carpeta
+   `frontend`, que usa `frontend/vercel.json`). Antes, poner la URL de Render en
+   `frontend/src/environments/environment.ts`.
 
 ## Requerimientos
 
@@ -151,7 +155,7 @@ Consigna del TP 2 (segundo parcial). Se corrige por sprints de una semana.
 
 - [x] Proyecto Angular
 - [x] Pantallas: Registro, Login, Publicaciones y Mi perfil
-- [ ] Deploy en hosting
+- [x] Deploy en hosting
 - [x] Navegación entre componentes, sin límites de acceso
 - [x] Favicon propio
 - [x] Login: formulario con validaciones y mensajes
@@ -265,6 +269,11 @@ Consigna del TP 2 (segundo parcial). Se corrige por sprints de una semana.
 - [ ] Back: `POST` guardar, `POST` quitar de guardados, `POST` compartir, `GET` compartidos conmigo y los nuevos ordenamientos
 
 ## Historial de cambios
+
+### 0.1.1 · 2026-10-24 · Deploy
+
+- Backend publicado en Render con la base en MongoDB Atlas y frontend publicado en Vercel.
+- El frontend de producción apunta a la API de Render, y la API solo acepta pedidos desde el dominio de Vercel (CORS).
 
 ### 0.1.0 · 2026-10-24 · Sprint 1
 
