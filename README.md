@@ -8,7 +8,7 @@ Hecha con **Angular 21** en el frontend y **NestJS 11** con **MongoDB** en el ba
 | **Frontend** | <https://plaza-red-social.vercel.app> |
 | **Backend** | <https://red-social-api-95af.onrender.com> |
 | **Repositorio** | <https://github.com/KevinPlucci/Plaza-Red-Social> |
-| **Estado** | Sprint 1 terminado y publicado |
+| **Estado** | Sprints 1 y 2 terminados |
 
 ## Documentación
 
@@ -22,10 +22,12 @@ Hecha con **Angular 21** en el frontend y **NestJS 11** con **MongoDB** en el ba
 - Registro con nombre, apellido, correo, nombre de usuario, contraseña, fecha de nacimiento, descripción breve e
   imagen de perfil, con validaciones y mensajes en cada campo.
 - Ingreso con el correo o con el nombre de usuario.
-- Perfil propio con la foto y todos los datos de la cuenta.
+- Publicaciones con título, mensaje e imagen opcional.
+- Listado paginado, ordenado por fecha o por cantidad de "Me gusta".
+- Dar y quitar "Me gusta", y eliminar las publicaciones propias (baja lógica).
+- Perfil propio con la foto, todos los datos de la cuenta y las últimas 3 publicaciones con sus comentarios.
 - Perfiles "usuario" (por defecto) y "administrador".
 - Avisos y confirmaciones en modales, sin `alert()`.
-- Pantalla de publicaciones, que se completa en el sprint 2.
 
 ## Stack
 

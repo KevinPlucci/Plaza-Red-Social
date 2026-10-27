@@ -1,4 +1,4 @@
-import { Transform, TransformFnParams, Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsDate,
   IsEmail,
@@ -10,11 +10,7 @@ import {
   MinDate,
   MinLength,
 } from 'class-validator';
-
-export const recortar = ({ value }: TransformFnParams): unknown =>
-  typeof value === 'string' ? value.trim() : value;
-const recortarYMinusculas = ({ value }: TransformFnParams): unknown =>
-  typeof value === 'string' ? value.trim().toLowerCase() : value;
+import { recortar, recortarYMinusculas } from '../../comun/transformaciones';
 
 /**
  * Datos del formulario de registro (llegan como multipart/form-data junto con la imagen).

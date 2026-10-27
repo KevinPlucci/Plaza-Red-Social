@@ -2,9 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { esIdValido } from '../comun/ids';
 import { Imagen } from './schemas/imagen.schema';
-
-const ID_VALIDO = /^[a-f\d]{24}$/i;
 
 @Injectable()
 export class ImagenesService {
@@ -23,9 +22,7 @@ export class ImagenesService {
   }
 
   async buscar(id: string) {
-    const imagen = ID_VALIDO.test(id)
-      ? await this.imagenModel.findById(id)
-      : null;
+    const imagen = esIdValido(id) ? await this.imagenModel.findById(id) : null;
     if (!imagen) throw new NotFoundException('La imagen no existe.');
     return imagen;
   }
@@ -33,7 +30,7 @@ export class ImagenesService {
   /** Borra la imagen a partir de su URL (se usa si falla el alta del documento que la referencia). */
   async eliminarPorUrl(url: string): Promise<void> {
     const id = url.split('/').pop() ?? '';
-    if (ID_VALIDO.test(id)) await this.imagenModel.deleteOne({ _id: id });
+    if (esIdValido(id)) await this.imagenModel.deleteOne({ _id: id });
   }
 
   private urlPublica(): string {

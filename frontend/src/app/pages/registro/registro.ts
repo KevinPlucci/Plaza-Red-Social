@@ -9,6 +9,7 @@ import { ErrorCampo } from '../../shared/components/error-campo';
 import {
   contrasenaSegura,
   contrasenasIguales,
+  correoValido,
   fechaNacimientoValida,
   imagenValida,
   nombreUsuarioValido,
@@ -36,7 +37,7 @@ export class Registro {
     {
       nombre: ['', [Validators.required, Validators.maxLength(50)]],
       apellido: ['', [Validators.required, Validators.maxLength(50)]],
-      correo: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
+      correo: ['', [Validators.required, correoValido, Validators.maxLength(100)]],
       nombreUsuario: ['', [Validators.required, nombreUsuarioValido]],
       contrasena: ['', [Validators.required, contrasenaSegura]],
       repetirContrasena: ['', Validators.required],

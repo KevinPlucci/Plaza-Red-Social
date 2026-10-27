@@ -38,6 +38,65 @@
         </div>
       </dl>
     </section>
+
+    <section class="ultimas">
+      <h2>Mis últimas publicaciones</h2>
+      @if (cargando() && !ultimas()) {
+        <div class="estado">
+          <span class="spinner" aria-hidden="true"></span>
+          <p class="texto-suave">Cargando tus publicaciones...</p>
+        </div>
+      } @else if (error(); as mensajes) {
+        <div class="tarjeta vacio">
+          <h3>No se pudieron cargar tus publicaciones</h3>
+          @for (mensaje of mensajes; track $index) {
+            <p class="texto-suave">{{ mensaje }}</p>
+          }
+          <button type="button" class="btn btn-primario" (click)="recargar()">Reintentar</button>
+        </div>
+      } @else if (ultimas(); as lista) {
+        @for (item of lista; track item.publicacion.id) {
+          <app-tarjeta-publicacion [publicacion]="item.publicacion" (eliminada)="recargar()">
+            <div class="comentarios">
+              <h3>Comentarios ({{ item.comentarios.total }})</h3>
+              @for (comentario of item.comentarios.comentarios; track comentario.id) {
+                <div class="comentario">
+                  <img class="avatar" [src]="comentario.usuario.imagenPerfil" alt="" />
+                  <div>
+                    <p class="autor-comentario">
+                      <strong
+                        >{{ comentario.usuario.nombre }} {{ comentario.usuario.apellido }}</strong
+                      >
+                      <span class="texto-suave">
+                        {{ comentario.createdAt | date: 'd MMM y, HH:mm' }}
+                        @if (comentario.modificado) {
+                          · editado
+                        }
+                      </span>
+                    </p>
+                    <p class="texto-comentario">{{ comentario.mensaje }}</p>
+                  </div>
+                </div>
+              } @empty {
+                <p class="texto-suave">Todavía no hay comentarios.</p>
+              }
+              @if (item.comentarios.total > item.comentarios.comentarios.length) {
+                <p class="texto-suave">
+                  Y {{ item.comentarios.total - item.comentarios.comentarios.length }} comentarios
+                  más.
+                </p>
+              }
+            </div>
+          </app-tarjeta-publicacion>
+        } @empty {
+          <div class="tarjeta vacio">
+            <h3>Todavía no publicaste nada</h3>
+            <p class="texto-suave">Tus últimas tres publicaciones van a aparecer acá.</p>
+            <a routerLink="/publicaciones" class="btn btn-primario">Ir a publicar</a>
+          </div>
+        }
+      }
+    </section>
   } @else {
     <section class="tarjeta vacio">
       <svg

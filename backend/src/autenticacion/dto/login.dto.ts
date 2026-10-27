@@ -1,6 +1,6 @@
 import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { recortar } from './registro.dto';
+import { recortar } from '../../comun/transformaciones';
 
 export class LoginDto {
   /** Correo o nombre de usuario: los dos son únicos, así que cualquiera identifica a la cuenta. */

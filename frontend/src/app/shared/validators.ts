@@ -34,6 +34,12 @@ export const nombreUsuarioValido: ValidatorFn = (
   return !valor || NOMBRE_USUARIO.test(valor) ? null : { nombreUsuario: true };
 };
 
+/** Correo con dominio completo (usuario@dominio.algo), igual que exige el backend. */
+export const correoValido: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const valor = String(control.value ?? '').trim();
+  return !valor || CORREO.test(valor) ? null : { email: true };
+};
+
 /** Para el login: si tiene @ se valida como correo, si no como nombre de usuario. */
 export const correoONombreUsuario: ValidatorFn = (
   control: AbstractControl,

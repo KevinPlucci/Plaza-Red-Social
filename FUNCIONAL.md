@@ -8,7 +8,7 @@ La parte técnica (instalación, arquitectura y decisiones) está en [TECNICO.md
 1. [Qué es Plaza](#1-qué-es-plaza)
 2. [Perfiles](#2-perfiles)
 3. [Pantallas](#3-pantallas)
-4. [Registro e ingreso](#4-registro-e-ingreso)
+4. [Cómo se usa](#4-cómo-se-usa)
 5. [Reglas de negocio](#5-reglas-de-negocio)
 6. [Requerimientos por sprint](#6-requerimientos-por-sprint)
 7. [Criterios adoptados](#7-criterios-adoptados)
@@ -21,23 +21,25 @@ Una red social: cada persona crea su cuenta con sus datos y una foto de perfil, 
 opcional, y reacciona y comenta lo que publican los demás. Los administradores, además, moderan las publicaciones,
 gestionan los usuarios y consultan estadísticas de uso.
 
-El trabajo se entrega por sprints de una semana. Hoy está terminado el **sprint 1**: registro con foto de perfil,
-ingreso con correo o nombre de usuario, la pantalla de publicaciones (todavía sin contenido) y el perfil propio.
+El trabajo se entrega por sprints de una semana. Hoy están terminados el **sprint 1** (registro con foto de perfil,
+ingreso con correo o nombre de usuario y perfil propio) y el **sprint 2**: publicar con imagen opcional, ver las
+publicaciones paginadas y ordenadas por fecha o por "Me gusta", dar y quitar "Me gusta", eliminar las propias y ver en
+el perfil las últimas tres con sus comentarios.
 
 ## 2. Perfiles
 
 | Perfil | Quién es | Qué puede hacer hoy |
 |---|---|---|
-| Visitante | Entra sin sesión | Recorrer todas las pantallas (el sprint 1 no limita el acceso), registrarse e ingresar |
-| Usuario | Toda cuenta nueva | Lo anterior, más ver sus datos en *Mi perfil* y cerrar sesión |
-| Administrador | Cuenta a la que se le cambió el perfil | Lo mismo que un usuario. Sus permisos propios (dar de baja publicaciones, dashboard de usuarios y estadísticas) llegan en el sprint 4 |
+| Visitante | Entra sin sesión | Recorrer todas las pantallas y leer las publicaciones, registrarse e ingresar. Para publicar o dar "Me gusta" se le pide ingresar |
+| Usuario | Toda cuenta nueva | Lo anterior, más publicar, dar y quitar "Me gusta", eliminar sus publicaciones, ver sus datos y sus últimas publicaciones en *Mi perfil* y cerrar sesión |
+| Administrador | Cuenta a la que se le cambió el perfil | Lo mismo que un usuario. La API ya le permite eliminar cualquier publicación; los botones para hacerlo desde la pantalla, el dashboard de usuarios y las estadísticas llegan en el sprint 4 |
 
 ## 3. Pantallas
 
 | Pantalla | Qué ofrece | Quién entra |
 |---|---|---|
-| Publicaciones | Saludo al usuario y el listado de publicaciones (vacío hasta el sprint 2). Sin sesión, accesos a ingresar o crear cuenta | Todos |
-| Mi perfil | Foto, nombre y apellido, nombre de usuario, perfil, descripción, correo, fecha de nacimiento y fecha de alta. Sin sesión, un aviso con accesos a ingresar o registrarse | Todos |
+| Publicaciones | Formulario para publicar (con sesión), selector de orden ("Más recientes" o "Más 'Me gusta'"), las publicaciones de a 5 con paginación y el rango que se está viendo ("Mostrando 1–5 de 12"). Cada publicación muestra autor, fecha, título, mensaje, imagen, "Me gusta" y, si es propia, el botón para eliminarla | Todos |
+| Mi perfil | Foto, nombre y apellido, nombre de usuario, perfil, descripción, correo, fecha de nacimiento y fecha de alta, y las últimas 3 publicaciones propias, cada una con sus comentarios más recientes. Sin sesión, un aviso con accesos a ingresar o registrarse | Todos |
 | Crear cuenta | Formulario de registro con imagen de perfil y vista previa | Todos |
 | Ingresar | Formulario con correo o nombre de usuario y contraseña | Todos |
 | Página no encontrada | Aviso para direcciones que no existen, con un enlace a publicaciones | Todos |
@@ -45,7 +47,7 @@ ingreso con correo o nombre de usuario, la pantalla de publicaciones (todavía s
 El encabezado está en todas las pantallas: lleva a Publicaciones y a Mi perfil y, según haya sesión o no, muestra la
 foto y el nombre de usuario con el botón para cerrar sesión, o los accesos a ingresar y registrarse.
 
-## 4. Registro e ingreso
+## 4. Cómo se usa
 
 **Registro**
 
@@ -62,6 +64,36 @@ foto y el nombre de usuario con el botón para cerrar sesión, o los accesos a i
    falló.
 3. Si coinciden, se entra a Publicaciones con la sesión iniciada. La sesión se mantiene al recargar la página.
 
+**Publicar**
+
+1. Con la sesión iniciada, en Publicaciones se completa el título y el mensaje y, si se quiere, se agrega una imagen
+   (se ve una vista previa y se puede quitar).
+2. Si falta el título o el mensaje, se marca debajo del campo. Un texto con solo espacios cuenta como vacío.
+3. Al publicar, un modal lo confirma y la publicación aparece primera en el listado ordenado por fecha.
+
+**Ver las publicaciones**
+
+- Se muestran de a 5, de la más nueva a la más vieja. El selector cambia el orden a "Más 'Me gusta'".
+- Los botones de abajo pasan de página. La página y el orden quedan en la dirección (por ejemplo,
+  `/publicaciones?pagina=2&orden=meGusta`), así se conservan al recargar o al volver atrás.
+
+**"Me gusta"**
+
+- El botón muestra cuántos "Me gusta" tiene la publicación y queda resaltado si ya le diste uno. Un clic lo da y otro
+  lo quita.
+- Sin sesión, el botón abre un modal que invita a ingresar.
+
+**Eliminar**
+
+- Solo las publicaciones propias muestran el botón para eliminar. Antes de borrar, un modal pide confirmación nombrando
+  la publicación.
+- La publicación deja de verse en el listado y en el perfil, pero queda guardada (baja lógica).
+
+**Mi perfil**
+
+- Debajo de los datos de la cuenta aparecen las últimas 3 publicaciones propias, cada una con sus 3 comentarios más
+  recientes y la cantidad total. Desde ahí también se puede dar "Me gusta" y eliminar.
+
 **Cierre de sesión:** el botón del encabezado pide confirmación en un modal y después lleva a Ingresar.
 
 ## 5. Reglas de negocio
@@ -76,6 +108,12 @@ foto y el nombre de usuario con el botón para cerrar sesión, o los accesos a i
 | Descripción breve | Obligatoria, hasta 200 caracteres, con un contador a la vista |
 | Imagen de perfil | Obligatoria. JPG, PNG, GIF o WEBP de hasta 2 MB |
 | Perfil | Toda cuenta nueva es "usuario". No se puede elegir al registrarse |
+| Título de una publicación | Obligatorio, hasta 100 caracteres |
+| Mensaje de una publicación | Obligatorio, hasta 1000 caracteres, con contador a la vista |
+| Imagen de una publicación | Opcional. JPG, PNG, GIF o WEBP de hasta 2 MB |
+| "Me gusta" | Uno por usuario y publicación. Solo se puede quitar si se había dado |
+| Eliminar una publicación | Solo el autor o un administrador. Es una baja lógica: deja de mostrarse junto con sus comentarios |
+| Listado | Solo publicaciones activas. Por fecha (la más nueva primero) o por cantidad de "Me gusta"; a igual cantidad, la más nueva primero |
 
 Otras reglas:
 
@@ -97,7 +135,7 @@ Referencias: `[x]` implementado · `[ ]` pendiente.
 - [x] Respuestas con status correctos (nunca 200 en errores ni 400 en respuestas correctas)
 - [x] Diseño trabajado y uniforme, sin `alert()`: modales
 - [x] Navegación entre pantallas e información clara al mostrar mensajes o realizar acciones
-- [ ] Publicaciones con título, mensaje e imagen opcional, "Me gusta" y comentarios
+- [ ] Publicaciones con título, mensaje e imagen opcional, "Me gusta" y comentarios (publicaciones y "Me gusta" hechos; escribir comentarios en el sprint 3)
 - [ ] Ver y editar el perfil propio (ver: hecho)
 - [ ] Solo se accede a la aplicación con sesión iniciada (sprint 3)
 
@@ -133,23 +171,23 @@ Referencias: `[x]` implementado · `[ ]` pendiente.
 
 **Front**
 
-- [ ] Publicaciones: listado ordenado por fecha por defecto
-- [ ] Cambiar el orden a cantidad de "Me gusta"
-- [ ] Cantidad limitada de publicaciones con paginación
-- [ ] Cada publicación es un componente
-- [ ] Dar y quitar "Me gusta"
-- [ ] Eliminar mis publicaciones
-- [ ] Mi perfil: todos los datos y la foto de perfil
-- [ ] Mi perfil: mis últimas 3 publicaciones con sus comentarios
+- [x] Publicaciones: listado ordenado por fecha por defecto
+- [x] Cambiar el orden a cantidad de "Me gusta"
+- [x] Cantidad limitada de publicaciones con paginación (de a 5)
+- [x] Cada publicación es un componente (`app-tarjeta-publicacion`)
+- [x] Dar y quitar "Me gusta"
+- [x] Eliminar mis publicaciones
+- [x] Mi perfil: todos los datos y la foto de perfil
+- [x] Mi perfil: mis últimas 3 publicaciones con sus comentarios
 
 **Back**
 
-- [ ] Alta, listado y baja lógica de publicaciones
-- [ ] `POST` publicación de un usuario con título, descripción e imagen opcional guardada
-- [ ] `DELETE` baja lógica, solo del autor o de un administrador
-- [ ] `GET` listado con orden por fecha o "Me gusta", filtro por usuario y `offset`/`limit`
-- [ ] `POST` "Me gusta" (uno por usuario y publicación)
-- [ ] `DELETE` quitar el "Me gusta" propio
+- [x] Alta, listado y baja lógica de publicaciones
+- [x] `POST` publicación de un usuario con título, mensaje e imagen opcional guardada
+- [x] `DELETE` baja lógica, solo del autor o de un administrador
+- [x] `GET` listado con orden por fecha o "Me gusta", filtro por usuario y `offset`/`limit`
+- [x] `POST` "Me gusta" (uno por usuario y publicación)
+- [x] `DELETE` quitar el "Me gusta" propio
 
 ### Sprint 3
 
@@ -239,4 +277,13 @@ Puntos que la consigna no define y cómo se resolvieron:
 | Acceso a las pantallas | El sprint 1 pide navegación sin límites: todas las pantallas se pueden abrir sin sesión. *Mi perfil* sin sesión muestra un aviso en lugar de datos vacíos. |
 | Sesión | En el sprint 1 el login devuelve los datos del usuario y la sesión se guarda en el navegador hasta que se cierra. Los tokens JWT con vencimiento llegan en el sprint 3. |
 | Error al ingresar | El mensaje no dice si falló el usuario o la contraseña, para no revelar qué cuentas existen. |
+| Quién hace cada pedido (sprint 2) | Hasta que llegue el JWT del sprint 3, el front manda el id del usuario logueado en el header `X-Usuario-Id` y la API lo valida contra la base. Es provisorio y se puede falsificar; en el sprint 3 se reemplaza por el token sin cambiar las pantallas ni los controllers. |
+| Leer sin sesión | Las publicaciones se pueden leer sin sesión (el sprint 3 cierra el acceso). Publicar, dar "Me gusta" y eliminar piden ingresar. |
+| Publicaciones por página | 5, para que la paginación se note con pocas publicaciones. La API acepta hasta 50 por pedido. |
+| Orden por "Me gusta" | A igual cantidad de "Me gusta", primero la más nueva. |
+| "Me gusta" a una publicación propia | Se permite: la consigna no lo prohíbe. |
+| Quitar un "Me gusta" que no se dio | La API responde 404 (ese "Me gusta" no existe). Dar uno repetido responde 409. |
+| Eliminar | Pide confirmación. La publicación no se borra de la base (baja lógica) y no hay forma de recuperarla desde la aplicación. |
+| Administrador | La API ya le deja eliminar publicaciones ajenas; el botón en pantalla para hacerlo llega en el sprint 4, como pide la consigna. |
+| Comentarios en Mi perfil | Se muestran los 3 más recientes de cada publicación y la cantidad total. Escribirlos y editarlos llega en el sprint 3; hasta entonces cada publicación muestra "Todavía no hay comentarios". |
 | Nombre de la aplicación | "Plaza", por la plaza como lugar de encuentro. |

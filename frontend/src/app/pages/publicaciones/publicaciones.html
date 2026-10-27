@@ -10,25 +10,82 @@
     </p>
   </div>
 
-  <section class="tarjeta vacio">
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.6"
-      stroke-linecap="round"
-      aria-hidden="true"
-    >
-      <path d="M6 4h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-4 3v-3H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
-      <path d="M8 9h8M8 12.5h5" />
-    </svg>
-    <h2>Todavía no hay publicaciones</h2>
-    <p class="texto-suave">Cuando alguien publique algo, lo vas a ver acá.</p>
-    @if (!auth.haySesion()) {
-      <div class="acciones">
-        <a routerLink="/login" class="btn btn-secundario">Ingresar</a>
-        <a routerLink="/registro" class="btn btn-primario">Crear cuenta</a>
-      </div>
+  @if (auth.haySesion()) {
+    <app-nueva-publicacion (publicada)="alPublicar()" />
+  } @else {
+    <div class="nota-sesion">
+      <a routerLink="/login">Ingresá</a> o <a routerLink="/registro">creá una cuenta</a> para
+      publicar y dar "Me gusta".
+    </div>
+  }
+
+  <div class="barra-listado">
+    <div class="orden" role="group" aria-label="Ordenar publicaciones">
+      <button
+        type="button"
+        [class.activo]="orden() === 'fecha'"
+        [attr.aria-pressed]="orden() === 'fecha'"
+        (click)="cambiarOrden('fecha')"
+      >
+        Más recientes
+      </button>
+      <button
+        type="button"
+        [class.activo]="orden() === 'meGusta'"
+        [attr.aria-pressed]="orden() === 'meGusta'"
+        (click)="cambiarOrden('meGusta')"
+      >
+        Más "Me gusta"
+      </button>
+    </div>
+    @if (rango(); as r) {
+      <span class="texto-suave">Mostrando {{ r.desde }}–{{ r.hasta }} de {{ r.total }}</span>
     }
-  </section>
+  </div>
+
+  @if (cargando() && !listado()) {
+    <div class="estado">
+      <span class="spinner" aria-hidden="true"></span>
+      <p class="texto-suave">Cargando publicaciones...</p>
+    </div>
+  } @else if (error(); as mensajes) {
+    <section class="tarjeta vacio">
+      <h2>No se pudieron cargar las publicaciones</h2>
+      @for (mensaje of mensajes; track $index) {
+        <p class="texto-suave">{{ mensaje }}</p>
+      }
+      <button type="button" class="btn btn-primario" (click)="recargar()">Reintentar</button>
+    </section>
+  } @else if (listado(); as l) {
+    @if (l.publicaciones.length) {
+      <div class="listado" [class.actualizando]="cargando()">
+        @for (publicacion of l.publicaciones; track publicacion.id) {
+          <app-tarjeta-publicacion [publicacion]="publicacion" (eliminada)="recargar()" />
+        }
+      </div>
+      <app-paginacion
+        [pagina]="pagina()"
+        [totalPaginas]="totalPaginas()"
+        (cambiar)="cambiarPagina($event)"
+      />
+    } @else {
+      <section class="tarjeta vacio">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path
+            d="M6 4h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-4 3v-3H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"
+          />
+          <path d="M8 9h8M8 12.5h5" />
+        </svg>
+        <h2>Todavía no hay publicaciones</h2>
+        <p class="texto-suave">Cuando alguien publique algo, lo vas a ver acá.</p>
+      </section>
+    }
+  }
 </div>

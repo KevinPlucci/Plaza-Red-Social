@@ -27,3 +27,5 @@ export class Publicacion {
 }
 
 export const PublicacionSchema = SchemaFactory.createForClass(Publicacion);
+// El listado siempre filtra las activas y, por defecto, ordena por fecha.
+PublicacionSchema.index({ activa: 1, createdAt: -1 });

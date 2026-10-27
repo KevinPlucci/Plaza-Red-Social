@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { esIdValido } from '../comun/ids';
 import { Perfil, Usuario } from './schemas/usuario.schema';
 
 export type NuevoUsuario = Omit<Usuario, 'perfil'> & { perfil?: Perfil };
@@ -10,6 +11,10 @@ export class UsuariosService {
   constructor(
     @InjectModel(Usuario.name) private readonly usuarioModel: Model<Usuario>,
   ) {}
+
+  async buscarPorId(id: string) {
+    return esIdValido(id) ? this.usuarioModel.findById(id) : null;
+  }
 
   crear(datos: NuevoUsuario) {
     return this.usuarioModel.create(datos);
