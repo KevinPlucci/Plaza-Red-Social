@@ -38,7 +38,7 @@ import { imagenValida, TIPOS_IMAGEN } from '../../shared/validators';
               formControlName="mensaje"
               rows="3"
               maxlength="1000"
-              placeholder="¿Qué querés compartir?"
+              placeholder="Contá cómo te fue en el partido, un gol o una jugada."
             ></textarea>
           </label>
           <small class="ayuda contador">{{ form.controls.mensaje.value.length }}/1000</small>
@@ -109,7 +109,7 @@ import { imagenValida, TIPOS_IMAGEN } from '../../shared/validators';
       clip-path: inset(50%);
     }
     label.btn:has(.oculto:focus-visible) {
-      outline: 3px solid rgb(15 107 102 / 35%);
+      outline: 3px solid var(--color-foco);
       outline-offset: 2px;
     }
   `,

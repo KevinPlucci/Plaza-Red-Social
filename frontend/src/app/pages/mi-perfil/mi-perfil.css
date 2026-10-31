@@ -14,6 +14,12 @@
   margin-bottom: 8px;
 }
 
+.etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
 .foto {
   width: 112px;
   height: 112px;
@@ -87,31 +93,16 @@
   margin: 0;
 }
 
-.comentario {
-  display: flex;
-  gap: 10px;
-  padding: 10px 12px;
-  background: var(--color-fondo);
-  border-radius: 8px;
+app-comentario {
+  display: block;
 }
 
-.comentario + .comentario {
+app-comentario + app-comentario {
   margin-top: 8px;
 }
 
-.comentario .avatar {
-  width: 32px;
-  height: 32px;
-}
-
-.autor-comentario {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 8px;
-  font-size: 0.9rem;
-}
-
-.texto-comentario {
-  white-space: pre-line;
-  overflow-wrap: anywhere;
+.ver-todos {
+  display: inline-block;
+  margin-top: 10px;
+  font-weight: 600;
 }

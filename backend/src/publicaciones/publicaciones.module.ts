@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AutenticacionModule } from '../autenticacion/autenticacion.module';
 import { ImagenesModule } from '../imagenes/imagenes.module';
-import { UsuariosModule } from '../usuarios/usuarios.module';
 import { ComentariosController } from './comentarios.controller';
 import { ComentariosService } from './comentarios.service';
 import { PublicacionesController } from './publicaciones.controller';
@@ -15,8 +15,8 @@ import { Publicacion, PublicacionSchema } from './schemas/publicacion.schema';
       { name: Publicacion.name, schema: PublicacionSchema },
       { name: Comentario.name, schema: ComentarioSchema },
     ]),
-    // UsuariosModule lo necesita SesionGuard para identificar al usuario del pedido.
-    UsuariosModule,
+    // SesionGuard verifica el token y carga al usuario con lo que exporta AutenticacionModule.
+    AutenticacionModule,
     ImagenesModule,
   ],
   controllers: [PublicacionesController, ComentariosController],

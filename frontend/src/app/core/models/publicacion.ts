@@ -1,3 +1,5 @@
+import { Posicion } from './usuario';
+
 /** Datos públicos del autor de una publicación o un comentario. */
 export interface Autor {
   id: string;
@@ -5,6 +7,7 @@ export interface Autor {
   apellido: string;
   nombreUsuario: string;
   imagenPerfil: string;
+  posicion?: Posicion;
 }
 
 export interface Publicacion {
@@ -16,6 +19,7 @@ export interface Publicacion {
   cantidadMeGusta: number;
   /** true si el usuario logueado ya le dio "Me gusta". */
   meGustaMio: boolean;
+  cantidadComentarios: number;
   createdAt: string;
   updatedAt: string;
 }

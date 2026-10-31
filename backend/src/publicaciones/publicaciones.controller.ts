@@ -13,7 +13,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { SesionGuard, SesionOpcional } from '../autenticacion/sesion.guard';
+import { SesionGuard } from '../autenticacion/sesion.guard';
 import { UsuarioActual } from '../autenticacion/usuario-actual.decorator';
 import { ImagenPipe, LIMITE_SUBIDA } from '../imagenes/imagen.pipe';
 import type { UsuarioDocument } from '../usuarios/schemas/usuario.schema';
@@ -26,14 +26,19 @@ import { PublicacionesService } from './publicaciones.service';
 export class PublicacionesController {
   constructor(private readonly publicaciones: PublicacionesService) {}
 
-  /** 200 con { publicaciones, total, offset, limit } · 400 parámetros inválidos. No exige sesión. */
+  /** 200 con { publicaciones, total, offset, limit } · 400 parámetros inválidos · 401 sin sesión. */
   @Get()
-  @SesionOpcional()
   listar(
     @Query() filtro: ListarPublicacionesDto,
-    @UsuarioActual() lector: UsuarioDocument | null,
+    @UsuarioActual() lector: UsuarioDocument,
   ) {
-    return this.publicaciones.listar(filtro, lector?._id);
+    return this.publicaciones.listar(filtro, lector._id);
+  }
+
+  /** 200 con la publicación · 401 sin sesión · 404 no existe o fue eliminada. */
+  @Get(':id')
+  obtener(@Param('id') id: string, @UsuarioActual() lector: UsuarioDocument) {
+    return this.publicaciones.buscarVista(id, lector._id);
   }
 
   /** 201 con la publicación creada · 400 datos o imagen inválidos · 401 sin sesión. */

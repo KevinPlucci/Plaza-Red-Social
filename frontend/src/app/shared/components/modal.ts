@@ -9,7 +9,7 @@ import { ModalService } from '../../core/services/modal.service';
       #dialogo
       [class]="'modal-' + (modal()?.tipo ?? 'info')"
       aria-labelledby="modal-titulo"
-      (close)="servicio.cerrar(false)"
+      (close)="alCerrarse()"
       (click)="cerrarSiEsFondo($event)"
     >
       @if (modal(); as m) {
@@ -141,6 +141,8 @@ export class Modal {
   protected readonly servicio = inject(ModalService);
   protected readonly modal = this.servicio.abierto;
   private readonly dialogo = viewChild.required<ElementRef<HTMLDialogElement>>('dialogo');
+  /** true entre un close() hecho desde acá y el evento "close" que dispara el navegador. */
+  private cierrePropio = false;
 
   constructor() {
     // Abre o cierra el <dialog> según lo que indique el servicio.
@@ -148,8 +150,23 @@ export class Modal {
       const dialogo = this.dialogo().nativeElement;
       const hayModal = this.modal() !== null;
       if (hayModal && !dialogo.open) dialogo.showModal();
-      if (!hayModal && dialogo.open) dialogo.close();
+      if (!hayModal && dialogo.open) {
+        this.cierrePropio = true;
+        dialogo.close();
+      }
     });
+  }
+
+  /**
+   * El evento "close" llega un instante después del cierre. Si lo provocó el effect, se ignora:
+   * para entonces puede haberse abierto otro modal, que no hay que cerrar. Si no (Esc), se cancela.
+   */
+  protected alCerrarse(): void {
+    if (this.cierrePropio) {
+      this.cierrePropio = false;
+      return;
+    }
+    this.servicio.cerrar(false);
   }
 
   /** Un solo mensaje se muestra como párrafo; varios, como lista. */

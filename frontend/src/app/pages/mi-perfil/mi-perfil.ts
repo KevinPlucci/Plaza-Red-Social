@@ -14,9 +14,11 @@ import {
   tap,
 } from 'rxjs';
 import { ListadoComentarios, Publicacion } from '../../core/models/publicacion';
+import { NOMBRES_POSICION } from '../../core/models/usuario';
 import { AuthService } from '../../core/services/auth.service';
 import { PublicacionesService } from '../../core/services/publicaciones.service';
 import { mensajesDeError } from '../../core/utils/errores';
+import { ComentarioItem } from '../../shared/components/comentario';
 import { TarjetaPublicacion } from '../../shared/components/tarjeta-publicacion';
 
 const ULTIMAS = 3;
@@ -29,12 +31,13 @@ interface PublicacionConComentarios {
 
 @Component({
   selector: 'app-mi-perfil',
-  imports: [DatePipe, RouterLink, TarjetaPublicacion],
+  imports: [DatePipe, RouterLink, TarjetaPublicacion, ComentarioItem],
   templateUrl: './mi-perfil.html',
   styleUrl: './mi-perfil.css',
 })
 export class MiPerfil {
   protected readonly auth = inject(AuthService);
+  protected readonly posiciones = NOMBRES_POSICION;
   private readonly servicio = inject(PublicacionesService);
   private readonly recargar$ = new BehaviorSubject<void>(undefined);
 

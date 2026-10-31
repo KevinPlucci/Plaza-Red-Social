@@ -1,7 +1,7 @@
 {
   "name": "red-social-backend",
-  "version": "0.2.0",
-  "description": "API de la red social (TP 2 Programación IV)",
+  "version": "0.3.0",
+  "description": "API de Vestuario, la red social de jugadores de fútbol (TP 2 Programación IV)",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
@@ -21,6 +21,7 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.2",
     "@nestjs/mongoose": "^11.0.4",
     "@nestjs/platform-express": "^11.0.1",
     "bcryptjs": "^3.0.3",

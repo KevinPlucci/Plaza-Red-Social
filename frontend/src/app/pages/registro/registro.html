@@ -2,7 +2,8 @@
   <div class="cabecera-pagina">
     <h1>Crear cuenta</h1>
     <p class="texto-suave">
-      Completá tus datos para sumarte a Plaza. Todos los campos son obligatorios.
+      Completá tus datos para sumarte al vestuario. Todos los campos son obligatorios, salvo el
+      club.
     </p>
   </div>
 
@@ -114,6 +115,34 @@
       <app-error-campo [control]="campos.fechaNacimiento" />
     </div>
 
+    <div class="fila-campos">
+      <div class="campo">
+        <label>
+          <span>Posición</span>
+          <select formControlName="posicion">
+            <option value="" disabled>Elegí tu posición</option>
+            @for (posicion of posiciones; track posicion.valor) {
+              <option [value]="posicion.valor">{{ posicion.texto }}</option>
+            }
+          </select>
+        </label>
+        <app-error-campo [control]="campos.posicion" />
+      </div>
+      <div class="campo">
+        <label>
+          <span>Club <span class="opcional">(opcional)</span></span>
+          <input
+            type="text"
+            formControlName="club"
+            maxlength="50"
+            autocomplete="off"
+            placeholder="Por ejemplo, Club Atlético Banfield"
+          />
+        </label>
+        <app-error-campo [control]="campos.club" />
+      </div>
+    </div>
+
     <div class="campo">
       <label>
         <span>Descripción breve</span>
@@ -121,7 +150,7 @@
           formControlName="descripcion"
           rows="3"
           maxlength="200"
-          placeholder="Contá en pocas palabras quién sos o qué te gusta."
+          placeholder="Contá cómo jugás: pierna hábil, tu fuerte, de qué cuadro sos."
         ></textarea>
       </label>
       <small class="ayuda contador">{{ campos.descripcion.value.length }}/200</small>

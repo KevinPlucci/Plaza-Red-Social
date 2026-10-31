@@ -48,8 +48,14 @@
 }
 
 label.btn:has(.oculto:focus-visible) {
-  outline: 3px solid rgb(15 107 102 / 35%);
+  outline: 3px solid var(--color-foco);
   outline-offset: 2px;
+}
+
+.opcional {
+  display: inline;
+  font-weight: 400;
+  color: var(--color-texto-suave);
 }
 
 .fecha {

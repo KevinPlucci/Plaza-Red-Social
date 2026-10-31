@@ -2,51 +2,55 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  SetMetadata,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
 import type { Request } from 'express';
 import type { UsuarioDocument } from '../usuarios/schemas/usuario.schema';
 import { UsuariosService } from '../usuarios/usuarios.service';
+import type { DatosToken } from './token';
+
+export type PedidoConUsuario = Request & {
+  usuario?: UsuarioDocument;
+  token?: DatosToken;
+};
+
+/** Token del header "Authorization: Bearer <token>". */
+const BEARER = /^Bearer (\S+)$/i;
 
 /**
- * Header con el id del usuario que hace el pedido. Es provisorio: en el sprint 3 la identidad
- * pasa a salir del token JWT y este guard se reemplaza sin tocar los controllers.
+ * Identifica al usuario del pedido a partir del token JWT y lo deja en request.usuario (y el
+ * payload en request.token). Sin token, con uno vencido o adulterado, o si la cuenta ya no
+ * existe, responde 401.
  */
-export const ENCABEZADO_USUARIO = 'x-usuario-id';
-
-const SESION_OPCIONAL = 'sesionOpcional';
-
-/** La ruta funciona sin sesión; si el pedido trae una válida, igual se carga el usuario. */
-export const SesionOpcional = () => SetMetadata(SESION_OPCIONAL, true);
-
-export type PedidoConUsuario = Request & { usuario?: UsuarioDocument };
-
-/** Identifica al usuario del pedido y lo deja en request.usuario. Sin un usuario válido responde 401. */
 @Injectable()
 export class SesionGuard implements CanActivate {
   constructor(
+    private readonly jwt: JwtService,
     private readonly usuarios: UsuariosService,
-    private readonly reflector: Reflector,
   ) {}
 
   async canActivate(contexto: ExecutionContext): Promise<boolean> {
     const pedido = contexto.switchToHttp().getRequest<PedidoConUsuario>();
-    const id = pedido.header(ENCABEZADO_USUARIO);
-    const usuario = id ? await this.usuarios.buscarPorId(id) : null;
-    if (usuario) {
-      pedido.usuario = usuario;
-      return true;
+    const token = BEARER.exec(pedido.header('authorization') ?? '')?.[1];
+    if (!token) {
+      throw new UnauthorizedException(
+        'Tenés que iniciar sesión para hacer esto.',
+      );
     }
 
-    const opcional = this.reflector.getAllAndOverride<boolean>(
-      SESION_OPCIONAL,
-      [contexto.getHandler(), contexto.getClass()],
-    );
-    if (opcional) return true;
-    throw new UnauthorizedException(
-      'Tenés que iniciar sesión para hacer esto.',
-    );
+    // verifyAsync rechaza tanto la firma inválida como el token vencido.
+    const datos = await this.jwt
+      .verifyAsync<DatosToken>(token)
+      .catch(() => null);
+    const usuario = datos ? await this.usuarios.buscarPorId(datos.sub) : null;
+    if (!datos || !usuario) {
+      throw new UnauthorizedException(
+        'Tu sesión venció o no es válida. Ingresá de nuevo.',
+      );
+    }
+    pedido.usuario = usuario;
+    pedido.token = datos;
+    return true;
   }
 }

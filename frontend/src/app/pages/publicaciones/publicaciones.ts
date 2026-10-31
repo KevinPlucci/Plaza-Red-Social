@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { BehaviorSubject, catchError, combineLatest, map, of, switchMap, tap } from 'rxjs';
 import { ListadoPublicaciones, OrdenPublicaciones } from '../../core/models/publicacion';
 import { AuthService } from '../../core/services/auth.service';
@@ -24,7 +24,7 @@ function leerParametros(params: ParamMap): { pagina: number; orden: OrdenPublica
 
 @Component({
   selector: 'app-publicaciones',
-  imports: [RouterLink, NuevaPublicacion, TarjetaPublicacion, Paginacion],
+  imports: [NuevaPublicacion, TarjetaPublicacion, Paginacion],
   templateUrl: './publicaciones.html',
   styleUrl: './publicaciones.css',
 })
@@ -111,7 +111,7 @@ export class Publicaciones {
     await this.modal.abrir({
       tipo: 'exito',
       titulo: 'Publicación creada',
-      mensaje: 'Tu publicación ya se puede ver en Plaza.',
+      mensaje: 'Tu publicación ya se puede ver en el vestuario.',
     });
   }
 

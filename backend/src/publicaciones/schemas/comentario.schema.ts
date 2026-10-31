@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { Usuario } from '../../usuarios/schemas/usuario.schema';
 
-/** Comentario de una publicación. Se crean y se editan desde el sprint 3; en el sprint 2 solo se listan. */
+/** Comentario de una publicación. Solo su autor lo puede editar, y queda marcado como modificado. */
 @Schema({ collection: 'comentarios', timestamps: true })
 export class Comentario {
   @Prop({

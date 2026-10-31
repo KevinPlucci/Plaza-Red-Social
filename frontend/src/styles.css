@@ -1,4 +1,4 @@
-/* Estilos generales de Plaza: fondo gris claro, tarjetas blancas y un verde azulado como color principal. */
+/* Estilos generales de Vestuario: fondo gris claro, tarjetas blancas y el verde del césped como color principal. */
 
 :root {
   --color-fondo: #f4f5f7;
@@ -6,9 +6,12 @@
   --color-texto: #1f2328;
   --color-texto-suave: #5f6770;
   --color-borde: #dde1e6;
-  --color-primario: #0f6b66;
-  --color-primario-oscuro: #0b524e;
-  --color-primario-suave: #e8f2f1;
+  --color-primario: #1a7a3a;
+  --color-primario-oscuro: #135c2b;
+  --color-primario-suave: #e6f3ea;
+  /* Franjas claras del césped (encabezado) y anillo de foco. */
+  --color-cesped: #18692f;
+  --color-foco: rgb(26 122 58 / 35%);
   --color-error: #b42318;
   --color-error-suave: #fdf1f0;
   --color-exito: #1e6b3a;
@@ -142,9 +145,10 @@ p {
 
 .btn:focus-visible,
 input:focus-visible,
+select:focus-visible,
 textarea:focus-visible,
 a:focus-visible {
-  outline: 3px solid rgb(15 107 102 / 35%);
+  outline: 3px solid var(--color-foco);
   outline-offset: 2px;
 }
 
@@ -190,6 +194,7 @@ a:focus-visible {
 }
 
 .campo input,
+.campo select,
 .campo textarea {
   width: 100%;
   padding: 9px 12px;
@@ -206,6 +211,7 @@ a:focus-visible {
 }
 
 .campo input.ng-invalid.ng-touched,
+.campo select.ng-invalid.ng-touched,
 .campo textarea.ng-invalid.ng-touched,
 .campo input.invalido {
   border-color: var(--color-error);

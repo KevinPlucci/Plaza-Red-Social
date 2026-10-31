@@ -47,7 +47,7 @@ export class PublicacionesService {
   /** Página de publicaciones activas, ordenadas por fecha o por cantidad de "Me gusta". */
   async listar(
     { orden, usuario, offset, limit }: ListarPublicacionesDto,
-    lector?: Types.ObjectId,
+    lector: Types.ObjectId,
   ) {
     const filtro = {
       activa: true,
@@ -71,6 +71,15 @@ export class PublicacionesService {
       this.publicacionModel.countDocuments(filtro),
     ]);
     return { publicaciones, total, offset, limit };
+  }
+
+  /** Una publicación activa con la misma forma que en el listado, o 404. */
+  async buscarVista(
+    id: string,
+    lector: Types.ObjectId,
+  ): Promise<VistaPublicacion> {
+    if (!esIdValido(id)) throw new NotFoundException(NO_EXISTE);
+    return this.obtener(new Types.ObjectId(id), lector);
   }
 
   /** Publicación activa o 404 (también si el id no tiene formato válido). */
@@ -134,7 +143,7 @@ export class PublicacionesService {
 
   private async obtener(
     id: Types.ObjectId,
-    lector?: Types.ObjectId,
+    lector: Types.ObjectId,
   ): Promise<VistaPublicacion> {
     const [vista] = await this.publicacionModel.aggregate<VistaPublicacion>([
       { $match: { _id: id, activa: true } },
@@ -144,10 +153,22 @@ export class PublicacionesService {
     return vista;
   }
 
-  /** Forma en que se responde cada publicación: con su autor, la cantidad de "Me gusta" y si el lector dio uno. */
-  private etapasVista(lector?: Types.ObjectId): PipelineStage[] {
+  /**
+   * Forma en que se responde cada publicación: con su autor, la cantidad de "Me gusta", si el
+   * lector dio uno y la cantidad de comentarios (contados con el índice por publicación).
+   */
+  private etapasVista(lector: Types.ObjectId): PipelineStage[] {
     return [
       ...UNIR_AUTOR,
+      {
+        $lookup: {
+          from: 'comentarios',
+          localField: '_id',
+          foreignField: 'publicacion',
+          pipeline: [{ $count: 'total' }],
+          as: 'conteoComentarios',
+        },
+      },
       {
         $project: {
           _id: 0,
@@ -157,9 +178,10 @@ export class PublicacionesService {
           imagen: { $ifNull: ['$imagen', null] },
           usuario: DATOS_AUTOR,
           cantidadMeGusta: { $size: '$meGusta' },
-          meGustaMio: lector
-            ? { $in: [lector, '$meGusta'] }
-            : { $literal: false },
+          meGustaMio: { $in: [lector, '$meGusta'] },
+          cantidadComentarios: {
+            $ifNull: [{ $first: '$conteoComentarios.total' }, 0],
+          },
           createdAt: 1,
           updatedAt: 1,
         },

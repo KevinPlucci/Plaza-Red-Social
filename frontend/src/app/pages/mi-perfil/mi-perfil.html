@@ -14,9 +14,14 @@
         <div>
           <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
           <p class="texto-suave">{{ '@' + usuario.nombreUsuario }}</p>
-          <span class="etiqueta">{{
-            usuario.perfil === 'administrador' ? 'Administrador' : 'Usuario'
-          }}</span>
+          <div class="etiquetas">
+            @if (usuario.posicion) {
+              <span class="etiqueta">{{ posiciones[usuario.posicion] }}</span>
+            }
+            <span class="etiqueta">{{
+              usuario.perfil === 'administrador' ? 'Administrador' : 'Usuario'
+            }}</span>
+          </div>
         </div>
       </div>
 
@@ -26,6 +31,14 @@
         <div>
           <dt>Correo</dt>
           <dd>{{ usuario.correo }}</dd>
+        </div>
+        <div>
+          <dt>Club</dt>
+          <dd>{{ usuario.club || 'Sin club' }}</dd>
+        </div>
+        <div>
+          <dt>Posición</dt>
+          <dd>{{ usuario.posicion ? posiciones[usuario.posicion] : 'Sin indicar' }}</dd>
         </div>
         <div>
           <dt>Fecha de nacimiento</dt>
@@ -58,33 +71,16 @@
         @for (item of lista; track item.publicacion.id) {
           <app-tarjeta-publicacion [publicacion]="item.publicacion" (eliminada)="recargar()">
             <div class="comentarios">
-              <h3>Comentarios ({{ item.comentarios.total }})</h3>
+              <h3>Últimos comentarios</h3>
               @for (comentario of item.comentarios.comentarios; track comentario.id) {
-                <div class="comentario">
-                  <img class="avatar" [src]="comentario.usuario.imagenPerfil" alt="" />
-                  <div>
-                    <p class="autor-comentario">
-                      <strong
-                        >{{ comentario.usuario.nombre }} {{ comentario.usuario.apellido }}</strong
-                      >
-                      <span class="texto-suave">
-                        {{ comentario.createdAt | date: 'd MMM y, HH:mm' }}
-                        @if (comentario.modificado) {
-                          · editado
-                        }
-                      </span>
-                    </p>
-                    <p class="texto-comentario">{{ comentario.mensaje }}</p>
-                  </div>
-                </div>
+                <app-comentario [comentario]="comentario" [publicacion]="item.publicacion.id" />
               } @empty {
                 <p class="texto-suave">Todavía no hay comentarios.</p>
               }
               @if (item.comentarios.total > item.comentarios.comentarios.length) {
-                <p class="texto-suave">
-                  Y {{ item.comentarios.total - item.comentarios.comentarios.length }} comentarios
-                  más.
-                </p>
+                <a class="ver-todos" [routerLink]="['/publicaciones', item.publicacion.id]">
+                  Ver los {{ item.comentarios.total }} comentarios
+                </a>
               }
             </div>
           </app-tarjeta-publicacion>
@@ -96,26 +92,6 @@
           </div>
         }
       }
-    </section>
-  } @else {
-    <section class="tarjeta vacio">
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.6"
-        stroke-linecap="round"
-        aria-hidden="true"
-      >
-        <circle cx="12" cy="9" r="4" />
-        <path d="M4.5 20a7.5 7.5 0 0 1 15 0" />
-      </svg>
-      <h2>Todavía no iniciaste sesión</h2>
-      <p class="texto-suave">Ingresá o creá una cuenta para ver tus datos.</p>
-      <div class="acciones">
-        <a routerLink="/login" class="btn btn-secundario">Ingresar</a>
-        <a routerLink="/registro" class="btn btn-primario">Crear cuenta</a>
-      </div>
     </section>
   }
 </div>

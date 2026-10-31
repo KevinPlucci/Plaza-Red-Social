@@ -1,4 +1,5 @@
 import { PipelineStage } from 'mongoose';
+import type { Posicion } from '../usuarios/schemas/usuario.schema';
 
 /** Datos públicos del autor que viajan con cada publicación o comentario (nunca el correo ni la contraseña). */
 export interface Autor {
@@ -7,6 +8,7 @@ export interface Autor {
   apellido: string;
   nombreUsuario: string;
   imagenPerfil: string;
+  posicion: Posicion;
 }
 
 export interface VistaPublicacion {
@@ -18,6 +20,7 @@ export interface VistaPublicacion {
   cantidadMeGusta: number;
   /** true si quien hace el pedido ya le dio "Me gusta". */
   meGustaMio: boolean;
+  cantidadComentarios: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -51,4 +54,5 @@ export const DATOS_AUTOR = {
   apellido: '$autor.apellido',
   nombreUsuario: '$autor.nombreUsuario',
   imagenPerfil: '$autor.imagenPerfil',
+  posicion: '$autor.posicion',
 };

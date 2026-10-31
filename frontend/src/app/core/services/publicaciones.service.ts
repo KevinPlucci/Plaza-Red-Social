@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
+  Comentario,
   EstadoMeGusta,
   ListadoComentarios,
   ListadoPublicaciones,
@@ -36,6 +37,10 @@ export class PublicacionesService {
     return this.http.get<ListadoPublicaciones>(this.url, { params: parametros(filtro) });
   }
 
+  obtener(id: string): Observable<Publicacion> {
+    return this.http.get<Publicacion>(`${this.url}/${id}`);
+  }
+
   /** Recibe un FormData porque puede incluir una imagen (multipart/form-data). */
   crear(datos: FormData): Observable<Publicacion> {
     return this.http.post<Publicacion>(this.url, datos);
@@ -56,6 +61,16 @@ export class PublicacionesService {
   comentarios(id: string, paginacion: { offset?: number; limit?: number } = {}) {
     return this.http.get<ListadoComentarios>(`${this.url}/${id}/comentarios`, {
       params: parametros(paginacion),
+    });
+  }
+
+  comentar(id: string, mensaje: string): Observable<Comentario> {
+    return this.http.post<Comentario>(`${this.url}/${id}/comentarios`, { mensaje });
+  }
+
+  editarComentario(id: string, idComentario: string, mensaje: string): Observable<Comentario> {
+    return this.http.put<Comentario>(`${this.url}/${id}/comentarios/${idComentario}`, {
+      mensaje,
     });
   }
 }

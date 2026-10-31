@@ -2,7 +2,9 @@ import { Transform, Type } from 'class-transformer';
 import {
   IsDate,
   IsEmail,
+  IsIn,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Matches,
   MaxDate,
@@ -10,7 +12,15 @@ import {
   MinDate,
   MinLength,
 } from 'class-validator';
-import { recortar, recortarYMinusculas } from '../../comun/transformaciones';
+import {
+  recortar,
+  recortarYMinusculas,
+  textoOpcional,
+} from '../../comun/transformaciones';
+import {
+  POSICIONES,
+  type Posicion,
+} from '../../usuarios/schemas/usuario.schema';
 
 /**
  * Datos del formulario de registro (llegan como multipart/form-data junto con la imagen).
@@ -65,6 +75,20 @@ export class RegistroDto {
   @IsNotEmpty({ message: 'La fecha de nacimiento es obligatoria.' })
   @Type(() => Date)
   fechaNacimiento: Date;
+
+  @IsIn(POSICIONES, {
+    message:
+      'La posición tiene que ser arquero, defensor, mediocampista o delantero.',
+  })
+  @IsNotEmpty({ message: 'La posición es obligatoria.' })
+  @Transform(recortarYMinusculas)
+  posicion: Posicion;
+
+  @MaxLength(50, { message: 'El club no puede superar los 50 caracteres.' })
+  @IsString({ message: 'El club tiene que ser un texto.' })
+  @IsOptional()
+  @Transform(textoOpcional)
+  club?: string;
 
   @MaxLength(200, {
     message: 'La descripción no puede superar los 200 caracteres.',

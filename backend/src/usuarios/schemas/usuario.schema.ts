@@ -4,6 +4,14 @@ import { HydratedDocument } from 'mongoose';
 export const PERFILES = ['usuario', 'administrador'] as const;
 export type Perfil = (typeof PERFILES)[number];
 
+export const POSICIONES = [
+  'arquero',
+  'defensor',
+  'mediocampista',
+  'delantero',
+] as const;
+export type Posicion = (typeof POSICIONES)[number];
+
 @Schema({
   collection: 'usuarios',
   timestamps: true,
@@ -40,6 +48,14 @@ export class Usuario {
 
   @Prop({ required: true, trim: true })
   descripcion: string;
+
+  /** Posición en la que juega. */
+  @Prop({ type: String, enum: POSICIONES, required: true })
+  posicion: Posicion;
+
+  /** Club en el que juega (opcional). */
+  @Prop({ trim: true })
+  club?: string;
 
   /** URL pública de la imagen de perfil. */
   @Prop({ required: true })

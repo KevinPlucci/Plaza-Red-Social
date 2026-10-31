@@ -2,6 +2,7 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
+import { NOMBRES_POSICION, Posicion } from '../../core/models/usuario';
 import { AuthService } from '../../core/services/auth.service';
 import { ModalService } from '../../core/services/modal.service';
 import { campoDelError, mensajesDeError } from '../../core/utils/errores';
@@ -30,6 +31,10 @@ export class Registro {
 
   protected readonly tiposImagen = TIPOS_IMAGEN.join(',');
   protected readonly hoy = new Date().toISOString().slice(0, 10);
+  protected readonly posiciones = Object.entries(NOMBRES_POSICION).map(([valor, texto]) => ({
+    valor,
+    texto,
+  }));
   protected readonly enviando = signal(false);
   protected readonly vistaPrevia = signal<string | null>(null);
 
@@ -42,6 +47,9 @@ export class Registro {
       contrasena: ['', [Validators.required, contrasenaSegura]],
       repetirContrasena: ['', Validators.required],
       fechaNacimiento: ['', [Validators.required, fechaNacimientoValida]],
+      posicion: this.fb.control<Posicion | ''>('', Validators.required),
+      // Opcional: si queda vacío, el backend no lo guarda.
+      club: ['', Validators.maxLength(50)],
       descripcion: ['', [Validators.required, Validators.maxLength(200)]],
       imagenPerfil: this.fb.control<File | null>(null, [Validators.required, imagenValida]),
     },

@@ -16,3 +16,6 @@ services:
         sync: false
       - key: CORS_ORIGEN
         sync: false
+      # Render genera un valor aleatorio la primera vez y lo conserva.
+      - key: JWT_SECRETO
+        generateValue: true

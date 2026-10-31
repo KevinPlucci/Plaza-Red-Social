@@ -1,11 +1,3 @@
-.nota-sesion {
-  padding: 14px 18px;
-  color: var(--color-texto-suave);
-  background: var(--color-superficie);
-  border: 1px dashed var(--color-borde);
-  border-radius: var(--radio);
-}
-
 .barra-listado {
   display: flex;
   flex-wrap: wrap;
